@@ -1,0 +1,14 @@
+# Rojo
+sourcemap.json
+
+# Wally
+Packages/
+
+lune_packages/
+roblox_packages/
+luau_packages/
+
+.vscode/
+.pesde/
+
+pesde.lock
