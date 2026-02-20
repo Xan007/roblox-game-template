@@ -1,3 +1,0 @@
-return {
-    Coins = 0
-}

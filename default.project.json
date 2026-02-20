@@ -1,5 +1,6 @@
 {
   "name": "rojo-showcase-template",
+  "emitLegacyScripts": false,
   "tree": {
     "$className": "DataModel",
     "ReplicatedStorage": {
@@ -8,15 +9,18 @@
       },
       "Packages": {
         "$path": "roblox_packages"
-      }
-      
+      },
+      "Client": {
+        "$path": "src/client"
+      },
+      "$ignoreUnknownInstances": true
     },
     "ServerScriptService": {
-      "$path": "src/server"
-    },
-    "StarterPlayer": {
-      "StarterPlayerScripts": {
-        "$path": "src/client"
+      "$path": "src/server",
+      "$ignoreUnknownInstances": true,
+
+      "Packages": {
+        "$path": "roblox_server_packages"
       }
     }
   }

@@ -1,44 +1,85 @@
+--[[
+DataService is responsible for handling player data profiles using the PlayerStore module.
+]]
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 local Players = game:GetService("Players")
 
+local Charm = require(ReplicatedStorage.Packages.Charm)
+local gt = require(ReplicatedStorage.Packages.GreenTea)
+local ProfileData = require(ServerScriptService.Data.ProfileData)
 local Signal = require(ReplicatedStorage.Packages.Signal)
+local Migration = require(script.Migration)
+local Migrations = require(ServerScriptService.Data.Migrations)
 
-local ProfileStore = require(ServerScriptService.Modules.ProfileStore)
-local ProfileTemplate = require(script.ProfileTemplate)
-local SessionTemplate = require(script.SessionTemplate)
+local PlayerStore = require(script.PlayerStore)
+local PlayerProfileStore = require(ServerScriptService.Stores.PlayerProfileStore)
 
-local PlayerStore = ProfileStore.New("PlayerStore", ProfileTemplate)
-
-export type PlayerProfile = typeof(PlayerStore:StartSessionAsync())
-
-local Profiles: {[Player]: PlayerProfile} = {}
-local Sessions: {[Player]: typeof(SessionTemplate)} = {}
+local Profiles = PlayerProfileStore.profiles
 
 local DataService = {}
+DataService.Order = 0
+
+type PlayerProfile = PlayerStore.PlayerProfile
+
 DataService.ProfileLoaded = Signal.new() :: Signal.Signal<Player, PlayerProfile>
+
+local CallbacksBeforeProfileRelease = {} :: { (player: Player, profile: PlayerProfile) -> () }
+
+function DataService.Start() 
+	DataService.ProfileLoaded:Connect(function(player: Player, profile)
+		local leadertstats = Instance.new("Folder")
+		leadertstats.Name = "leaderstats"
+		leadertstats.Parent = player
+		
+		for _, stat in ProfileData.leaderstats do
+			local object = Instance.new(stat.object)			
+			object.Parent = leadertstats
+			object.Name = stat.display
+
+			Charm.listen(Charm.computed(function()
+				return profile.Data[stat.key]
+			end), function(value, oldValue)
+				if stat.format then
+					object.Value = stat.format(value)
+				else
+					object.Value = value
+				end
+			end)
+		end
+	
+	end)
+end
+
+local function noYield<Args..., Results...>(fn: (Args...) -> Results...): (Args...) -> Results...
+	local function resultHandler(thread: thread, ok: boolean, ...)
+		if not ok then
+			error(debug.traceback(thread, tostring((...))))
+		elseif coroutine.status(thread) ~= "dead" then
+			error(debug.traceback(thread, "Yielding is not allowed on profile"))
+		end
+		return ...
+	end
+	return function(...)
+		local thread = coroutine.create(fn)
+		return resultHandler(thread, coroutine.resume(thread, ...))
+	end
+end
+
+local function typeCheck(data, player: Player?)
+	local profileTypechecker = gt.typecast(ProfileData.schema)
+	local isValid, msg = profileTypechecker:matches(data)
+	if not isValid then
+		if player then 
+			warn(`Profile data for player {player.Name} failed typecheck: {msg}`)
+		end
+	end
+
+	return isValid
+end
 
 function DataService.GetKey(userId: number)
 	return `Player_{userId}`
-end
-
-function DataService.Init()
-	local function handleProfile(player: Player, profile: PlayerProfile)
-		local leaderstats = script.leaderstats:Clone()
-		leaderstats.Parent = player
-		if leaderstats then
-			leaderstats.Coins.Value = profile.Data.Coins
-		end
-	end
-	
-	for player, profile in Profiles do
-		handleProfile(player, profile)
-	end
-	DataService.ProfileLoaded:Connect(handleProfile)
-end
-
-function DataService.Start()
-	
 end
 
 function DataService.GetStore()
@@ -75,10 +116,6 @@ function DataService.GetProfile(target: Player | number, waitForProfile: boolean
 	return profile
 end
 
-function DataService.GetSession(player: Player): typeof(SessionTemplate)
-	return Sessions[player]
-end
-
 --[[
 Allows to safely use a profile for a player.
 If the profile doesn't exist yet, it will yield until it does.
@@ -87,25 +124,14 @@ Returns true if the profile was successfully loaded.
 function DataService.UseProfile(target: Player | number, callback: (profile: PlayerProfile) -> (), waitForProfile: boolean?): boolean
 	local profile = DataService.GetProfile(target, waitForProfile or false)
 	if profile then
-		callback(profile)
+		noYield(callback)(profile)
 		return true
 	end
 	
-	return false
-end
-
-function DataService.UseSession(player: Player, callback: (session: typeof(SessionTemplate)) -> ()): boolean
-	local Session = Sessions[player]
-	if Session then
-		callback(Session)
-		return true
-	end
 	return false
 end
 
 function DataService.OnPlayerAdded(player: Player)
-	Sessions[player] = table.clone(SessionTemplate)
-	
 	-- Start a profile session for this player's data:
 	local profile = PlayerStore:StartSessionAsync(DataService.GetKey(player.UserId), {
 		Cancel = function()
@@ -122,6 +148,20 @@ function DataService.OnPlayerAdded(player: Player)
 	profile:AddUserId(player.UserId) -- GDPR compliance
 	profile:Reconcile() -- Fill in missing variables from PROFILE_TEMPLATE (optional)
 
+	-- Apply migrations if needed
+	local migrateOk, migratedData, lastCompatibleVersion = Migration.migrate(Migrations, profile.Data, player.Name)
+	if not migrateOk then
+		player:Kick(`Profile migration failed: {migratedData}`)
+		profile:EndSession()
+		return
+	end
+
+	for key, value in migratedData do
+		profile.Data[key] = value
+	end
+	profile.Data.migrationVersion = #Migrations
+	profile.Data.lastCompatibleVersion = lastCompatibleVersion
+
 	profile.OnSessionEnd:Connect(function()
 		Profiles[player] = nil
 		player:Kick(`Profile session end - Please rejoin`)
@@ -133,19 +173,33 @@ function DataService.OnPlayerAdded(player: Player)
 		return
 	end
 
-	Profiles[player] = profile
+	typeCheck(profile.Data, player)
 	
+	profile = PlayerProfileStore.wrapProfile(player, profile)
 	DataService.ProfileLoaded:Fire(player, profile)
 end
 
 function DataService.OnPlayerRemoving(player: Player)
-	Sessions[player] = nil
-	
 	local profile = Profiles[player]
 	if profile ~= nil then
+		for _, callback in CallbacksBeforeProfileRelease do
+			local success, error = pcall(function() 
+				noYield(callback)(player, profile)
+			end)
+			if not success then
+				warn(`Error in callback before profile release for player {player.Name}: {error}`)
+			end
+		end
+
+		typeCheck(profile.Data, player)
+
 		profile:EndSession()
 		Profiles[player] = nil
 	end
+end
+
+function DataService.RegisterBeforeProfileRelease(callback: (player: Player, profile: PlayerProfile) -> ())
+	table.insert(CallbacksBeforeProfileRelease, callback)
 end
 
 return DataService

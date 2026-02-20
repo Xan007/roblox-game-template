@@ -6,6 +6,7 @@ local Services = ServerScriptService.Services
 local Modules = ServerScriptService.Modules
 
 require(ReplicatedStorage.Shared.Hooks)
+require(ReplicatedStorage.Shared.AudioManager)
 
 framework.Add({
 	Services,

@@ -1,9 +1,0 @@
-{
-  "ClassName": "Folder",
-  "Children": [
-    {
-      "Name": "Coins",
-      "ClassName": "IntValue"
-    }
-  ]
-}
