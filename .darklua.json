@@ -1,0 +1,21 @@
+{
+  "process": [
+    {
+      "current": {
+        "name": "luau"
+      },
+      "rule": "convert_require",
+      "target": {
+        "indexing_style": "wait_for_child",
+        "name": "roblox",
+        "rojo_sourcemap": "sourcemap.json"
+      }
+    },
+    "compute_expression",
+    "remove_unused_if_branch",
+    "remove_unused_while",
+    "filter_after_early_return",
+    "remove_nil_declaration",
+    "remove_empty_do"
+  ]
+}

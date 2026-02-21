@@ -1,0 +1,27 @@
+{
+  "name": "rojo-showcase-template",
+  "emitLegacyScripts": false,
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "Shared": {
+        "$path": "darklua_build/shared"
+      },
+      "Packages": {
+        "$path": "roblox_packages"
+      },
+      "Client": {
+        "$path": "darklua_build/client"
+      },
+      "$ignoreUnknownInstances": true
+    },
+    "ServerScriptService": {
+      "$path": "darklua_build/server",
+      "$ignoreUnknownInstances": true,
+
+      "Packages": {
+        "$path": "roblox_server_packages"
+      }
+    }
+  }
+}

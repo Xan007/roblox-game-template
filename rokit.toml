@@ -1,2 +1,4 @@
 [tools]
 rojo = "rojo-rbx/rojo@7.7.0-rc.1"
+ezpm = "Breezy1214/ezpm@0.1.5"
+darklua = "seaofvoices/darklua@0.17.3"

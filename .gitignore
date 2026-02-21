@@ -4,12 +4,18 @@ sourcemap.json
 # Wally
 Packages/
 
+# Pesde
 lune_packages/
 roblox_packages/
 roblox_server_packages/
 luau_packages/
 
-.vscode/
 .pesde/
 
 pesde.lock
+
+#EZPM
+darklua_build/
+
+.vscode/
+
