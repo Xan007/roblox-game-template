@@ -1,6 +1,4 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
-local Charm = require(ReplicatedStorage.Packages.Charm)
+local Charm = require("../../../roblox_packages/Charm")
 
 local PlayerData = Charm.reactive({
     xp = 0,

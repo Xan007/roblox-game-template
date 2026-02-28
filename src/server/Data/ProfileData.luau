@@ -1,6 +1,4 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
-local gt = require(ReplicatedStorage.Packages.GreenTea)
+local gt = require("../../../roblox_packages/GreenTea")
 
 local schema = gt.table({
     xp = gt.number(),

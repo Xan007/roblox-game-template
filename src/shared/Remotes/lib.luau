@@ -3,11 +3,9 @@
 	Use `assert` to ensure the arguments match the expected types.
 ]]
 
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
 local RunService = game:GetService("RunService")
 
-local gt = require(ReplicatedStorage.Packages.GreenTea)
+local gt = require("../../../roblox_packages/GreenTea")
 
 export type Event<Args...> = {
 	FireServer: (self: Event<Args...>, Args...) -> (),

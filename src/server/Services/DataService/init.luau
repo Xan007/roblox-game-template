@@ -1,19 +1,17 @@
 --[[
 DataService is responsible for handling player data profiles using the PlayerStore module.
 ]]
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local ServerScriptService = game:GetService("ServerScriptService")
 local Players = game:GetService("Players")
 
-local Charm = require(ReplicatedStorage.Packages.Charm)
-local gt = require(ReplicatedStorage.Packages.GreenTea)
-local ProfileData = require(ServerScriptService.Data.ProfileData)
-local Signal = require(ReplicatedStorage.Packages.Signal)
-local Migration = require(script.Migration)
-local Migrations = require(ServerScriptService.Data.Migrations)
+local Charm = require("../../../roblox_packages/Charm")
+local gt = require("../../../roblox_packages/GreenTea")
+local ProfileData = require("../Data/ProfileData")
+local Signal = require("../../../roblox_packages/Signal")
+local Migration = require("@self/Migration")
+local Migrations = require("../Data/Migrations")
 
-local PlayerStore = require(script.PlayerStore)
-local PlayerProfileStore = require(ServerScriptService.Stores.PlayerProfileStore)
+local PlayerStore = require("@self/PlayerStore")
+local PlayerProfileStore = require("../Stores/PlayerProfileStore")
 
 local Profiles = PlayerProfileStore.profiles
 
