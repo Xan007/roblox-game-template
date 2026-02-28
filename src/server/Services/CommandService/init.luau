@@ -1,7 +1,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 local admins = require(script.admins)
-local conch = require(ReplicatedStorage.Packages.conch)
+local conch = require("@Packages/conch")
 
 local CommandService = {}
 

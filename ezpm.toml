@@ -17,3 +17,6 @@ Packages = "roblox_packages/"
 Server = "src/server/"
 ServerPackages = "roblox_server_packages/"
 Shared = "src/shared/"
+
+[serve]
+require_fix_mode = "strict"
