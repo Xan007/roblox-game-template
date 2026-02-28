@@ -1,8 +1,5 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local ServerScriptService = game:GetService("ServerScriptService")
-
-local Charm = require(ReplicatedStorage.Packages.Charm)
-local PlayerStore = require(ServerScriptService.Services.DataService.PlayerStore)
+local Charm = require("../../../roblox_packages/Charm")
+local PlayerStore = require("../Services/DataService/PlayerStore")
 
 export type PlayerProfile = typeof(PlayerStore:StartSessionAsync())
 

@@ -1,5 +1,4 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local conch = require(ReplicatedStorage.Packages.conch)
+local conch = require("../../../../../roblox_packages/conch")
 
 conch.register("kick", {
 	description = "Kicks the given player from the server",

@@ -1,9 +1,8 @@
 local Players = game:GetService("Players")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local PlayerDataStore = require(ReplicatedStorage.Client.Stores.PlayerDataStore)
-local CharmSync = require(ReplicatedStorage.Packages.CharmSync)
-local Remotes = require(ReplicatedStorage.Shared.Remotes)
+local PlayerDataStore = require("../Stores/PlayerDataStore")
+local CharmSync = require("../../../roblox_packages/CharmSync")
+local Remotes = require("../../shared/Remotes")
 
 local function deepAssign(target, source)
 	for key, value in source do

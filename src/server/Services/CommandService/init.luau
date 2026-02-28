@@ -1,14 +1,12 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local ServerScriptService = game:GetService("ServerScriptService")
-local admins = require(script.admins)
-local conch = require(ReplicatedStorage.Packages.conch)
+local admins = require("@self/admins")
+local conch = require("../../../roblox_packages/conch")
 
 local CommandService = {}
 
 function CommandService.Init()
     conch.initiate_default_lifecycle()
 
-    for _, commandModule in pairs(ServerScriptService.Modules.Commands:GetChildren()) do
+    for _, commandModule in script.Commands:GetChildren() do
         if commandModule:IsA("ModuleScript") then
             require(commandModule)
         end

@@ -4,24 +4,29 @@
   "tree": {
     "$className": "DataModel",
     "ReplicatedStorage": {
-      "Shared": {
-        "$path": "src/shared"
+      "src": {
+        "$className": "Folder",
+        "shared": {
+          "$path": "src/shared"
+        },
+        "client": {
+          "$path": "src/client"
+        },
+        "server": {
+          "$path": "src/server"
+        }
       },
-      "Packages": {
+
+      
+      "roblox_packages": {
         "$path": "roblox_packages"
       },
-      "Client": {
-        "$path": "src/client"
-      },
-      "$ignoreUnknownInstances": true
-    },
-    "ServerScriptService": {
-      "$path": "src/server",
-      "$ignoreUnknownInstances": true,
 
-      "Packages": {
+      "roblox_server_packages": {
         "$path": "roblox_server_packages"
-      }
+      },
+      
+      "$ignoreUnknownInstances": true
     }
   }
 }

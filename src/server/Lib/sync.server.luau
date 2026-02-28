@@ -1,12 +1,9 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local ServerScriptService = game:GetService("ServerScriptService")
-
-local ProfileData = require(ServerScriptService.Data.ProfileData)
-local DataService = require(ServerScriptService.Services.DataService)
-local Charm = require(ReplicatedStorage.Packages.Charm)
-local CharmSync = require(ReplicatedStorage.Packages.CharmSync)
-local Observers = require(ReplicatedStorage.Shared.Modules.Observers)
-local Remotes = require(ReplicatedStorage.Shared.Remotes)
+local ProfileData = require("../Data/ProfileData")
+local DataService = require("../Services/DataService")
+local Charm = require("../../../roblox_packages/Charm")
+local CharmSync = require("../../../roblox_packages/CharmSync")
+local Observers = require("../../shared/Modules/Observers")
+local Remotes = require("../../shared/Remotes")
 
 local server = CharmSync.server
 

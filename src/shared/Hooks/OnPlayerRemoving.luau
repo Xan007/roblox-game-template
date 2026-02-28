@@ -1,6 +1,5 @@
 local RunService = game:GetService("RunService")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Framework = require(ReplicatedStorage.Packages.Framework)
+local Framework = require("../../../roblox_packages/Framework")
 
 local OnPlayerRemoving = Framework.Hook("OnPlayerRemoving")
 
