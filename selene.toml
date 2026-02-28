@@ -1,1 +1,8 @@
-std = "selene_definitions"
+std = "roblox"
+
+[rules]
+incorrect_standard_library_use = "allow"
+shadowing = "allow"
+mixed_table = "allow"
+undefined_variable = "allow"
+unused_variable = "allow"

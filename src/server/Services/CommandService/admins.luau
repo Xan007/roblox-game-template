@@ -1,3 +1,3 @@
 return {
-    game.CreatorId 
+	game.CreatorId,
 }

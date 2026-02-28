@@ -25,17 +25,13 @@ local function createObserver<Key>(setup: (Observer<Key>) -> Cleanup, observer_i
 	local function add<Args...>(key: Key, factory: (Args...) -> Cleanup?, ...: Args...)
 		remove(key)
 
-		local success, cleanup = xpcall(
-			function(...)
-				local clean = (factory :: any)(...)
-				if clean ~= nil then
-					assert(typeof(clean) == "function", "callback must return a function or nil")
-				end
-				return clean
-			end,
-			debug.traceback,
-			...
-		)
+		local success, cleanup = xpcall(function(...)
+			local clean = (factory :: any)(...)
+			if clean ~= nil then
+				assert(typeof(clean) == "function", "callback must return a function or nil")
+			end
+			return clean
+		end, debug.traceback, ...)
 
 		if not success then
 			local err = ""
@@ -44,13 +40,13 @@ local function createObserver<Key>(setup: (Observer<Key>) -> Cleanup, observer_i
 			if lastColon then
 				err = firstLine:sub(lastColon + 1)
 			end
-            warn(
-                ("[Observers] Error in %s callback for key %s: %s"):format(
-                    observer_id or "observer",
-                    tostring(key),
-                    err
-                )
-            )
+			warn(
+				("[Observers] Error in %s callback for key %s: %s"):format(
+					observer_id or "observer",
+					tostring(key),
+					err
+				)
+			)
 			return
 		end
 

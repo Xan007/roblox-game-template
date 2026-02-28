@@ -1,8 +1,8 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local PlayerDataStore = require(ReplicatedStorage.Client.Stores.PlayerDataStore)
 local CharmSync = require(ReplicatedStorage.Packages.CharmSync)
+local PlayerDataStore = require(ReplicatedStorage.Client.Stores.PlayerDataStore)
 local Remotes = require(ReplicatedStorage.Shared.Remotes)
 
 local function deepAssign(target, source)
@@ -26,7 +26,7 @@ client.addSignals({
 		end
 
 		deepAssign(PlayerDataStore.playerData, data)
-	end
+	end,
 } :: any)
 
 Remotes.patch.OnClientEvent:Connect(function(patches)

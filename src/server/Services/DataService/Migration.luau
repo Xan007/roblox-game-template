@@ -30,11 +30,7 @@ Returns:
 - migratedData (table): The migrated data, or error message if failed
 - lastCompatibleVersion (number): The last incompatible version
 ]]
-function Migration.migrate(
-	migrations: { any },
-	data: { [string]: any },
-	key: string?
-): (boolean, any, number)
+function Migration.migrate(migrations: { any }, data: { [string]: any }, key: string?): (boolean, any, number)
 	local serverVersion = #migrations
 	local savedVersion = data.migrationVersion or 0
 	local lastCompatibleVersion = data.lastCompatibleVersion

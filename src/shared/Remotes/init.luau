@@ -1,11 +1,10 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local lib = require("@self/lib")
 local gt = require(ReplicatedStorage.Packages.GreenTea)
+local lib = require("@self/lib")
 
-return  {
+return {
 	assert = lib.assert,
 
-    patch = lib.event(),
+	patch = lib.event(),
 }
-

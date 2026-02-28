@@ -3,7 +3,8 @@
     "Client": "src/client/",
     "Packages": "roblox_packages/",
     "Server": "src/server/",
-    "ServerPackages": "rbolox_server_packages/",
-    "Shared": "src/shared/"
+    "ServerPackages": "roblox_server_packages/",
+    "Shared": "src/shared/",
+    "lune": "~/.lune/.typedefs/0.10.4"
   }
 }

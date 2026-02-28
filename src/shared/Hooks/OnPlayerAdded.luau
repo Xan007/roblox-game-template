@@ -1,5 +1,5 @@
-local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
 local Framework = require(ReplicatedStorage.Packages.Framework)
 
 local OnPlayerAdded = Framework.Hook("OnPlayerAdded")
@@ -21,5 +21,5 @@ return {
 				end
 			end)
 		end
-	end
+	end,
 }

@@ -1,18 +1,19 @@
+[project]
+name = "rojo-showcase-template"
+
+[paths]
+src = "src"
+darklua_build = "darklua_build"
+
+[display]
+file_changes = true
+docs_enabled = false
+logs_enabled = true
+check_updates = true
+
 [aliases]
 Client = "src/client/"
 Packages = "roblox_packages/"
 Server = "src/server/"
 ServerPackages = "roblox_server_packages/"
 Shared = "src/shared/"
-
-[display]
-docs_enabled = false
-file_changes = true
-logs_enabled = true
-
-[paths]
-darklua_build = "darklua_build"
-src = "src"
-
-[project]
-name = "rojo-showcase-template"

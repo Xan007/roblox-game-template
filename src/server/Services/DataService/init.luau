@@ -1,19 +1,19 @@
 --[[
 DataService is responsible for handling player data profiles using the PlayerStore module.
 ]]
+local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
-local Players = game:GetService("Players")
 
-local Charm = require(ReplicatedStorage.Packages.Charm)
-local gt = require(ReplicatedStorage.Packages.GreenTea)
-local ProfileData = require(ServerScriptService.Data.ProfileData)
-local Signal = require(ReplicatedStorage.Packages.Signal)
+local Charm = require("@Packages/Charm")
 local Migration = require(script.Migration)
 local Migrations = require(ServerScriptService.Data.Migrations)
+local ProfileData = require(ServerScriptService.Data.ProfileData)
+local Signal = require("@Packages/Signal")
+local gt = require("@Packages/GreenTea")
 
-local PlayerStore = require(script.PlayerStore)
 local PlayerProfileStore = require(ServerScriptService.Stores.PlayerProfileStore)
+local PlayerStore = require(script.PlayerStore)
 
 local Profiles = PlayerProfileStore.profiles
 
@@ -26,28 +26,30 @@ DataService.ProfileLoaded = Signal.new() :: Signal.Signal<Player, PlayerProfile>
 
 local CallbacksBeforeProfileRelease = {} :: { (player: Player, profile: PlayerProfile) -> () }
 
-function DataService.Start() 
+function DataService.Start()
 	DataService.ProfileLoaded:Connect(function(player: Player, profile)
 		local leadertstats = Instance.new("Folder")
 		leadertstats.Name = "leaderstats"
 		leadertstats.Parent = player
-		
+
 		for _, stat in ProfileData.leaderstats do
-			local object = Instance.new(stat.object)			
+			local object = Instance.new(stat.object)
 			object.Parent = leadertstats
 			object.Name = stat.display
 
-			Charm.listen(Charm.computed(function()
-				return profile.Data[stat.key]
-			end), function(value, oldValue)
-				if stat.format then
-					object.Value = stat.format(value)
-				else
-					object.Value = value
+			Charm.listen(
+				Charm.computed(function()
+					return profile.Data[stat.key]
+				end),
+				function(value, oldValue)
+					if stat.format then
+						object.Value = stat.format(value)
+					else
+						object.Value = value
+					end
 				end
-			end)
+			)
 		end
-	
 	end)
 end
 
@@ -70,7 +72,7 @@ local function typeCheck(data, player: Player?)
 	local profileTypechecker = gt.typecast(ProfileData.schema)
 	local isValid, msg = profileTypechecker:matches(data)
 	if not isValid then
-		if player then 
+		if player then
 			warn(`Profile data for player {player.Name} failed typecheck: {msg}`)
 		end
 	end
@@ -99,7 +101,7 @@ function DataService.GetProfile(target: Player | number, waitForProfile: boolean
 	else
 		return nil
 	end
-	
+
 	if player then
 		profile = Profiles[player]
 		if waitForProfile then
@@ -112,7 +114,7 @@ function DataService.GetProfile(target: Player | number, waitForProfile: boolean
 			end
 		end
 	end
-	
+
 	return profile
 end
 
@@ -121,13 +123,17 @@ Allows to safely use a profile for a player.
 If the profile doesn't exist yet, it will yield until it does.
 Returns true if the profile was successfully loaded.
 ]]
-function DataService.UseProfile(target: Player | number, callback: (profile: PlayerProfile) -> (), waitForProfile: boolean?): boolean
+function DataService.UseProfile(
+	target: Player | number,
+	callback: (profile: PlayerProfile) -> (),
+	waitForProfile: boolean?
+): boolean
 	local profile = DataService.GetProfile(target, waitForProfile or false)
 	if profile then
 		noYield(callback)(profile)
 		return true
 	end
-	
+
 	return false
 end
 
@@ -174,7 +180,7 @@ function DataService.OnPlayerAdded(player: Player)
 	end
 
 	typeCheck(profile.Data, player)
-	
+
 	profile = PlayerProfileStore.wrapProfile(player, profile)
 	DataService.ProfileLoaded:Fire(player, profile)
 end
@@ -183,7 +189,7 @@ function DataService.OnPlayerRemoving(player: Player)
 	local profile = Profiles[player]
 	if profile ~= nil then
 		for _, callback in CallbacksBeforeProfileRelease do
-			local success, error = pcall(function() 
+			local success, error = pcall(function()
 				noYield(callback)(player, profile)
 			end)
 			if not success then

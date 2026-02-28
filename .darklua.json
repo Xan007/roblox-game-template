@@ -6,7 +6,7 @@
       },
       "rule": "convert_require",
       "target": {
-        "indexing_style": "wait_for_child",
+        "indexing_style": "find_first_child",
         "name": "roblox",
         "rojo_sourcemap": "sourcemap.json"
       }
