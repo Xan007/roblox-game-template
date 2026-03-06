@@ -1,4 +1,4 @@
-name = "sander/doll_project"
+name = "sander/roblox-game-template"
 version = "0.1.0"
 authors = ["Sander"]
 license = "MIT"
@@ -39,5 +39,5 @@ conch_ui = { name = "alicesaidhi/conch_ui", version = "^0.4.0-rc.5" }
 
 ProfileStore = { wally = "lm-loleris/profilestore", version = "^1.0.3" }
 
-Charm = { repo = "littensy/charm", rev="charm-v0.11.0-rc.3", path = "packages/charm" }
-CharmSync = { repo = "littensy/charm", rev="charm-v0.11.0-rc.3", path = "packages/charm-sync" }
+Charm = { wally = "littensy/charm", version = "0.11.0-rc.4" }
+CharmSync = { wally = "littensy/charm-sync", version = "0.4.0-rc.6" }
