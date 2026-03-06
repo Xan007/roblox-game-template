@@ -13,3 +13,4 @@ luau_packages/
 .pesde/
 
 pesde.lock
+darklua_build/
